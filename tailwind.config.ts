@@ -9,10 +9,14 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        circle: "50%",
       },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        red: {
+          700: "#DFD0B8", // استبدال قيمة red-700
+        },
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
@@ -42,7 +46,7 @@ export default {
           foreground: "hsl(var(--destructive-foreground))",
         },
         border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
+        input: "hsl(36, 11%, 53%)",
         ring: "hsl(var(--ring))",
         chart: {
           "1": "hsl(var(--chart-1))",

@@ -47,9 +47,7 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
+  // Setup vite in development only after other routes
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
@@ -57,14 +55,18 @@ app.use((req, res, next) => {
   }
 
   // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
+  // On Windows, binding to "0.0.0.0" with reusePort may not be supported.
+  // Here, we use "127.0.0.1" on Windows and include reusePort only on non-Windows platforms.
   const port = 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
+  const host = process.platform === "win32" ? "127.0.0.1" : "0.0.0.0";
+  const listenOptions: { port: number; host: string; reusePort?: boolean } = { port, host };
+
+  if (process.platform !== "win32") {
+    // reusePort lets multiple processes share the same port (supported on Unix-based systems)
+    listenOptions.reusePort = true;
+  }
+  
+  server.listen(listenOptions, () => {
+    log(`serving on port ${port} at host ${host}`);
   });
 })();

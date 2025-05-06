@@ -2,7 +2,7 @@ import { Express } from "express";
 import axios from "axios";
 import { ApiResponse, Movie, TVShow, MovieDetails, TVShowDetails, FilterParams } from "@shared/types";
 
-const TMDB_API_KEY = process.env.TMDB_API_KEY || '';
+const TMDB_API_KEY = process.env.TMDB_API_KEY || '5372224e0e0e5a69c723b0111774fc3d';
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 
 // Create axios instance for TMDB API

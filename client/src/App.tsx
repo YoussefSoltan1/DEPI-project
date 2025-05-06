@@ -1,17 +1,18 @@
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/not-found";
-import { AuthProvider } from "@/hooks/use-auth";
-import { ProtectedRoute } from "@/lib/protected-route";
-import HomePage from "@/pages/home-page";
-import AuthPage from "@/pages/auth-page";
-import MovieDetailPage from "@/pages/movie-detail-page";
-import TvDetailPage from "@/pages/tv-detail-page";
-import MoviesPage from "@/pages/movies-page";
-import TvShowsPage from "@/pages/tv-shows-page";
+import { Toaster } from "./components/ui/toaster";
+import { TooltipProvider } from "./components/ui/tooltip";
+import NotFound from "./pages/not-found";
+import { AuthProvider } from "./hooks/use-auth";
+import { ProtectedRoute } from "./lib/protected-route";
+import HomePage from "./pages/home-page";
+import AuthPage from "./pages/auth-page";
+import MovieDetailPage from "./pages/movie-detail-page";
+import TvDetailPage from "./pages/tv-detail-page";
+import MoviesPage from "./pages/movies-page";
+import TvShowsPage from "./pages/tv-shows-page";
+import SearchPage from "./pages/search-page";
 import { ThemeProvider } from "next-themes";
 
 function Router() {
@@ -23,6 +24,7 @@ function Router() {
       <Route path="/tv" component={TvShowsPage} />
       <Route path="/movie/:id" component={MovieDetailPage} />
       <Route path="/tv/:id" component={TvDetailPage} />
+      <Route path="/search" component={SearchPage} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -44,7 +44,7 @@ const FilterBar = ({
   };
 
   return (
-    <div className="bg-hoverBg py-4 sticky top-[60px] z-40 shadow-md">
+    <div className="bg-hoverBg py-4 sticky top-[60px] z-40 shadow-md" style={{ position:'static' }}>
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3">
