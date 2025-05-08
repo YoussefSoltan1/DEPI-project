@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { MovieDetails } from "@shared/types";
@@ -9,24 +9,30 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { CalendarIcon, Clock, Star, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
+import TrailerModal from "@/components/ui/trailer-modal";
 
 const MovieDetailPage = () => {
   const [, setLocation] = useLocation();
   const [match, params] = useRoute("/movie/:id");
+  const [showTrailer, setShowTrailer] = useState(false);
 
   const {
     data: movie,
     isLoading,
     error,
-  } = useQuery({
+  } = useQuery<MovieDetails>({
     queryKey: [`/api/movies/${params?.id}`],
     queryFn: () => getMovieDetails(params?.id || ""),
     enabled: !!params?.id,
   });
+
+  const trailer = movie?.videos?.results?.find(
+    (v) => v.type === "Trailer" && v.site === "YouTube"
+  );
+  const trailerUrl = trailer ? `https://www.youtube.com/watch?v=${trailer.key}` : null;
 
   useEffect(() => {
     if (error) {
@@ -34,19 +40,16 @@ const MovieDetailPage = () => {
     }
   }, [error, setLocation]);
 
-  // Function to format runtime
   const formatRuntime = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
     return `${hours}h ${remainingMinutes}m`;
   };
 
-  // Calculate year from release date
   const getYear = (dateString: string) => {
     return new Date(dateString).getFullYear();
   };
 
-  // Function to get image URL
   const getImageUrl = (path: string | null, size = "original") => {
     if (!path) return null;
     return `https://image.tmdb.org/t/p/${size}${path}`;
@@ -174,37 +177,44 @@ const MovieDetailPage = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap gap-4 mb-8">
-              <Button className="bg-secondary hover:bg-red-700">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-2"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                Watch Now
-              </Button>
-              <Button
-                variant="outline"
-                className="border-hoverBg text-white hover:bg-hoverBg"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-2"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
-                </svg>
-                Add to Watchlist
-              </Button>
-            </div>
+<div className="flex flex-wrap gap-4 mb-8">
+  {trailerUrl && (
+    <Button
+      className="bg-secondary hover:bg-red-700"
+      onClick={() => setShowTrailer(true)}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-5 w-5 mr-2"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+      >
+        <path
+          fillRule="evenodd"
+          d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+          clipRule="evenodd"
+        />
+      </svg>
+      Watch Now
+    </Button>
+  )}
+
+  <Button
+    variant="outline"
+    className="border-hoverBg text-white hover:bg-hoverBg"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-5 w-5 mr-2"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+    >
+      <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+    </svg>
+    Add to Watchlist
+  </Button>
+</div>
+
           </div>
         </div>
 
@@ -346,6 +356,11 @@ const MovieDetailPage = () => {
             </TabsContent>
           </Tabs>
         </div>
+        
+        {/* Trailer Modal */}
+        {showTrailer && trailerUrl && (
+          <TrailerModal trailerUrl={trailerUrl} onClose={() => setShowTrailer(false)} />
+        )}
       </div>
 
       <Footer />

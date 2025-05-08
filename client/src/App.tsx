@@ -14,6 +14,7 @@ import MoviesPage from "./pages/movies-page";
 import TvShowsPage from "./pages/tv-shows-page";
 import SearchPage from "./pages/search-page";
 import { ThemeProvider } from "next-themes";
+import Chatbot from "./components/ui/chatbot"; 
 
 function Router() {
   return (
@@ -38,6 +39,7 @@ function App() {
           <TooltipProvider>
             <Toaster />
             <Router />
+            <Chatbot />
           </TooltipProvider>
         </ThemeProvider>
       </AuthProvider>

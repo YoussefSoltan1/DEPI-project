@@ -1,4 +1,3 @@
-// TMDB API types
 export interface Movie {
   id: number;
   title: string;
