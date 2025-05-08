@@ -34,7 +34,6 @@ function Router() {
 }
 
 function App() {
-  const { user } = useAuth();
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -42,12 +41,17 @@ function App() {
           <TooltipProvider>
             <Toaster />
             <Router />
-            {user && <Chatbot />}
+            <ChatbotWrapper />
           </TooltipProvider>
         </ThemeProvider>
       </AuthProvider>
     </QueryClientProvider>
   );
+}
+
+function ChatbotWrapper() {
+  const { user } = useAuth();
+  return user ? <Chatbot /> : null;
 }
 
 export default App;
