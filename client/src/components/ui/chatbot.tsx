@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -6,20 +7,30 @@ export default function Chatbot() {
     { sender: "bot", text: "Hi! How can I help you?" },
   ]);
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const toggleChat = () => setIsOpen((prev) => !prev);
 
-  const handleSend = () => {
-    if (!input.trim()) return;
-    setMessages((prev) => [...prev, { sender: "user", text: input }]);
-    setInput("");
+  const handleSend = async () => {
+    const trimmed = input.trim();
+    if (!trimmed) return;
 
-    setTimeout(() => {
+    setMessages((prev) => [...prev, { sender: "user", text: trimmed }]);
+    setInput("");
+    setLoading(true);
+
+    try {
+      const res = await axios.post("/api/chat", { question: trimmed });
+      const reply = res.data?.answer || "Hmm, I didn’t understand that.";
+      setMessages((prev) => [...prev, { sender: "bot", text: reply }]);
+    } catch (err) {
       setMessages((prev) => [
         ...prev,
-        { sender: "bot", text: "Thanks for your question!" },
+        { sender: "bot", text: "⚠️ Sorry, something went wrong." },
       ]);
-    }, 600);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -53,6 +64,13 @@ export default function Chatbot() {
                 </div>
               </div>
             ))}
+            {loading && (
+              <div className="text-left">
+                <div className="max-w-xs px-3 py-2 rounded-lg bg-zinc-200 dark:bg-zinc-700">
+                  Thinking…
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="p-2 flex gap-2 border-t dark:border-zinc-700">
@@ -62,8 +80,13 @@ export default function Chatbot() {
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
               placeholder="Ask something..."
               className="flex-1 px-2 py-1 border rounded dark:bg-zinc-800 dark:text-white"
+              disabled={loading}
             />
-            <button onClick={handleSend} className="text-blue-600 dark:text-blue-400">
+            <button
+              onClick={handleSend}
+              className="text-blue-600 dark:text-blue-400"
+              disabled={loading}
+            >
               Send
             </button>
           </div>

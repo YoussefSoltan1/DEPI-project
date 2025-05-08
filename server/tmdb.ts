@@ -12,7 +12,13 @@ const tmdbApi = axios.create({
     api_key: TMDB_API_KEY,
   },
 });
-
+export async function getMovieDetails(movieId: number) {
+  const apiKey = process.env.TMDB_API_KEY!;
+  const res = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}`, {
+    params: { api_key: apiKey },
+  });
+  return res.data;
+}
 export function setupTmdbRoutes(app: Express) {
   // Get trending movies
   app.get('/api/movies/trending', async (req, res, next) => {
@@ -176,4 +182,7 @@ export function setupTmdbRoutes(app: Express) {
       next(error);
     }
   });
+
+
+
 }
