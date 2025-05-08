@@ -1,6 +1,9 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import "dotenv/config";
+import cors from 'cors';
+
 
 const app = express();
 app.use(express.json());
@@ -70,3 +73,4 @@ app.use((req, res, next) => {
     log(`serving on port ${port} at host ${host}`);
   });
 })();
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));

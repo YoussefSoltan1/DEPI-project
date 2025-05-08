@@ -1,55 +1,17 @@
-import { users, type User, type InsertUser } from "@shared/schema";
 import session from "express-session";
-import createMemoryStore from "memorystore";
+import { PgStorage } from "./storage/pg-storage";
+import { type User, type InsertUser } from "@shared/schema";
 
-const MemoryStore = createMemoryStore(session);
-
-// modify the interface with any CRUD methods
-// you might need
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   sessionStore: session.SessionStore;
+  addToWishlist(userId: number, movieId: number): Promise<void>;
+  removeFromWishlist(userId: number, movieId: number): Promise<void>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  currentId: number;
-  sessionStore: session.SessionStore;
 
-  constructor() {
-    this.users = new Map();
-    this.currentId = 1;
-    this.sessionStore = new MemoryStore({
-      checkPeriod: 86400000,
-    });
-  }
+export const storage = new PgStorage();
 
-  async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async getUserByEmail(email: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.email === email,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentId++;
-    const now = new Date().toISOString();
-    const user: User = { ...insertUser, id, createdAt: now };
-    this.users.set(id, user);
-    return user;
-  }
-}
-
-export const storage = new MemStorage();

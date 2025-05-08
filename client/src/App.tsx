@@ -15,6 +15,8 @@ import TvShowsPage from "./pages/tv-shows-page";
 import SearchPage from "./pages/search-page";
 import { ThemeProvider } from "next-themes";
 import Chatbot from "./components/ui/chatbot"; 
+import { useAuth } from "./hooks/use-auth"; 
+
 
 function Router() {
   return (
@@ -32,6 +34,7 @@ function Router() {
 }
 
 function App() {
+  const { user } = useAuth();
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -39,7 +42,7 @@ function App() {
           <TooltipProvider>
             <Toaster />
             <Router />
-            <Chatbot />
+            {user && <Chatbot />}
           </TooltipProvider>
         </ThemeProvider>
       </AuthProvider>
