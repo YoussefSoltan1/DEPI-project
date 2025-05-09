@@ -187,10 +187,12 @@ const Navbar = () => {
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-hoverBg border-hoverBg">
-                <DropdownMenuItem className="text-white hover:bg-secondary focus:bg-secondary cursor-pointer">
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
-                </DropdownMenuItem>
+              <DropdownMenuItem className="text-white hover:bg-secondary focus:bg-secondary cursor-pointer">
+              <Link href="/profile" className="flex items-center">
+                <User className="mr-2 h-4 w-4" />
+                <span>Profile</span>
+              </Link>
+            </DropdownMenuItem>
                 <DropdownMenuItem
                   className="text-white hover:bg-secondary focus:bg-secondary cursor-pointer"
                   onClick={handleLogout}

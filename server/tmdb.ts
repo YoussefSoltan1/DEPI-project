@@ -182,6 +182,16 @@ export function setupTmdbRoutes(app: Express) {
       next(error);
     }
   });
+  app.get("/api/movies/:id/similar", async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const response = await tmdbApi.get(`/movie/${id}/similar`);
+      res.json(response.data);
+    } catch (error) {
+      next(error);
+    }
+  });
+  
 
 
 

@@ -16,6 +16,7 @@ import SearchPage from "./pages/search-page";
 import { ThemeProvider } from "next-themes";
 import Chatbot from "./components/ui/chatbot"; 
 import { useAuth } from "./hooks/use-auth"; 
+import ProfilePage from "./pages/profile-page";
 
 
 function Router() {
@@ -28,6 +29,7 @@ function Router() {
       <Route path="/movie/:id" component={MovieDetailPage} />
       <Route path="/tv/:id" component={TvDetailPage} />
       <Route path="/search" component={SearchPage} />
+      <Route path="/profile" component={ProfilePage} />
       <Route component={NotFound} />
     </Switch>
   );
