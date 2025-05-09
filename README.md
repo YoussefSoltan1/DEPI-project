@@ -138,6 +138,70 @@ POST /api/chat { question }
 
 ---
 
+Here’s an updated `README.md` section that includes **deployment instructions**, assuming you're using a basic setup with Node.js, PostgreSQL, and Vite (or similar) for the frontend:
+
+---
+
+## 🚀 Deployment Instructions
+
+### 📦 Prerequisites
+
+* Node.js (v18+)
+* PostgreSQL database
+* `pnpm` or `npm` or `yarn`
+* TMDB API key
+* Gemini API key
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/moviehub.git
+cd moviehub
+```
+
+### 2. Set Up Environment Variables
+
+Create a `.env` file in directory with the following content:
+
+```env
+DATABASE_URL=postgres://myuser:mypassword@localhost:5432/myapp
+SESSION_SECRET=super-secret-key
+GEMINI_API_KEY=your_gemini_api_key
+TMDB_API_KEY=your_tmdb_api_key
+```
+
+Make sure the PostgreSQL database is running and accessible with the credentials above.
+
+### 3. Install Dependencies
+
+#### Backend
+
+```bash
+npm i
+```
+
+### 4. Run Migrations (if using Drizzle ORM)
+
+```bash
+cd server
+npm drizzle-kit start  
+npm drizzle-kit up
+```
+
+### 5. Start the App
+
+```bash
+npm run dev
+```
+
+Now visit `http://localhost:5173` to use the application.
+
+### 🌍 Deploying to Production
+
+* Use `pm2` or Docker to run the backend server.
+* Host the frontend build (`pnpm build`) using Vercel, Netlify, or Nginx.
+* Ensure `.env` variables are set correctly on your server.
+
 ### 📚 Future Improvements
 
 * ✅ Rate or review movies
