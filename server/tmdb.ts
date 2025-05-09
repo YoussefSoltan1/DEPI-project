@@ -5,7 +5,6 @@ import { ApiResponse, Movie, TVShow, MovieDetails, TVShowDetails, FilterParams }
 const TMDB_API_KEY = process.env.TMDB_API_KEY || '5372224e0e0e5a69c723b0111774fc3d';
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 
-// Create axios instance for TMDB API
 const tmdbApi = axios.create({
   baseURL: TMDB_BASE_URL,
   params: {
@@ -20,7 +19,6 @@ export async function getMovieDetails(movieId: number) {
   return res.data;
 }
 export function setupTmdbRoutes(app: Express) {
-  // Get trending movies
   app.get('/api/movies/trending', async (req, res, next) => {
     try {
       const page = req.query.page ? Number(req.query.page) : 1;
@@ -33,7 +31,6 @@ export function setupTmdbRoutes(app: Express) {
     }
   });
 
-  // Get trending TV shows
   app.get('/api/tv/trending', async (req, res, next) => {
     try {
       const page = req.query.page ? Number(req.query.page) : 1;
@@ -76,7 +73,6 @@ export function setupTmdbRoutes(app: Express) {
     }
   });
 
-  // Get all genres
   app.get('/api/genres/:type', async (req, res, next) => {
     try {
       const { type } = req.params;
@@ -91,7 +87,6 @@ export function setupTmdbRoutes(app: Express) {
     }
   });
 
-  // Search movies and TV shows
   app.get('/api/search', async (req, res, next) => {
     try {
       const { query, type = 'movie', page = 1 } = req.query;
@@ -117,7 +112,6 @@ export function setupTmdbRoutes(app: Express) {
     }
   });
 
-  // Discover movies with filters
   app.get('/api/discover/movies', async (req, res, next) => {
     try {
       const { genre, year, page = 1 } = req.query;
@@ -137,7 +131,6 @@ export function setupTmdbRoutes(app: Express) {
     }
   });
 
-  // Discover TV shows with filters
   app.get('/api/discover/tv', async (req, res, next) => {
     try {
       const { genre, year, page = 1 } = req.query;
