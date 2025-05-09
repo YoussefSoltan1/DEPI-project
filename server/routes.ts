@@ -12,11 +12,9 @@ import { getMovieDetails } from "./tmdb";
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth and TMDB routes
   setupAuth(app);
   setupTmdbRoutes(app);
 
-  // Add to wishlist
   app.post("/api/wishlist", async (req, res) => {
     const user = req.user;
     if (!user) return res.sendStatus(401);
@@ -81,7 +79,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   return httpServer;
 }
 
-// === Gemini chat handler ===
+
 export async function handleChatRequest(req, res) {
   const userId = req.user?.id;
   const question = req.body.question;
@@ -97,30 +95,39 @@ export async function handleChatRequest(req, res) {
 
   const movieSummaries = await Promise.all(
     wishlistItems.map(async ({ movieId }) => {
-      const movie = await getMovieDetails(movieId);
-      return `${movie.title} (${movie.release_date}): ${movie.overview}`;
+      try {
+        const movie = await getMovieDetails(movieId);
+        return `${movie.title} (${movie.release_date}): ${movie.overview}`;
+      } catch (err) {
+        console.warn(`⚠️ Failed to fetch movie with ID ${movieId}:`, err?.response?.status || err.message);
+        return null; 
+      }
     })
   );
 
-  const context = movieSummaries.join("\n\n");
+  const validSummaries = movieSummaries.filter(Boolean);
+  if (validSummaries.length === 0) {
+    return res.status(200).json({ answer: "Your wishlist is empty or contains invalid entries. Please add valid movies first." });
+  }
+
+  const context = validSummaries.join("\n\n");
   const prompt = `Here are the movies in my wishlist:\n\n${context}\n\nQuestion: ${question}`;
 
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
-      contents: prompt, // ✅ simple string input
+      contents: prompt,
       config: {
         systemInstruction:
           "You are a movie recommendation assistant. Answer questions based on the user's movie wishlist.",
       },
     });
 
-    // ✅ Access `.text` directly
     res.json({ answer: response.text });
-
   } catch (err) {
-    console.error("❌ Gemini error:", err);
+    console.error("❌ Gemini API error:", err);
     res.status(500).json({ message: "Gemini API error" });
   }
 }
+
 
