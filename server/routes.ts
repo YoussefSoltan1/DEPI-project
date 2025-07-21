@@ -119,7 +119,7 @@ export async function handleChatRequest(req, res) {
       contents: prompt,
       config: {
         systemInstruction:
-          "You are a movie recommendation assistant. Answer questions based on the user's movie wishlist.",
+          
       },
     });
 
